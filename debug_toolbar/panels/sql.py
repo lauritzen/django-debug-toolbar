@@ -119,7 +119,7 @@ class DatabaseStatTracker(util.CursorDebugWrapper):
                 'duration': duration,
                 'raw_sql': sql,
                 'params': _params,
-                'hash': sha_constructor(settings.SECRET_KEY + sql + _params).hexdigest(),
+                'hash': sha_constructor("%s%s%s" % (settings.SECRET_KEY, sql.encode('utf-8') if type(sql) == unicode else sql, _params)).hexdigest(),
                 'stacktrace': stacktrace,
                 'start_time': start,
                 'stop_time': stop,
