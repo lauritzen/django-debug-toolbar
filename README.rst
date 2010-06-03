@@ -122,6 +122,9 @@ The debug toolbar has two settings that can be set in `settings.py`:
    * `TAG`: If set, this will be the tag to which debug_toolbar will attach the 
      debug toolbar. Defaults to 'body'.
 
+   * `ENABLE_AJAX`: If set to True (the default) debug information is
+     sent on Ajax requests and dynamically loaded into the toolbar.
+
    Example configuration::
 
 	def custom_show_toolbar(request):
@@ -133,6 +136,7 @@ The debug toolbar has two settings that can be set in `settings.py`:
 	    'EXTRA_SIGNALS': ['myproject.signals.MySignal'],
 	    'HIDE_DJANGO_SQL': False,
 	    'TAG': 'div',
+	    'ENABLE_AJAX': 'False',
 	}
 
 `debugsqlshell`

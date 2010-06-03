@@ -57,10 +57,15 @@ class DebugToolbarMiddleware(object):
             remote_addr = x_forwarded_for.split(',')[0].strip()
         else:
             remote_addr = request.META.get('REMOTE_ADDR', None)
-        if not remote_addr in settings.INTERNAL_IPS \
-            or (request.is_ajax() and \
-                not debug_toolbar.urls._PREFIX in request.path) \
-                    or not settings.DEBUG:
+
+        if hasattr(settings, 'DEBUG_TOOLBAR_CONFIG'):
+            ajax_enabled = settings.DEBUG_TOOLBAR_CONFIG.get('ENABLE_AJAX', True)
+        else:
+            ajax_enabled = True
+
+        if (not remote_addr in settings.INTERNAL_IPS
+            or (request.is_ajax() and not ajax_enabled)
+            or not settings.DEBUG):
             return False
         return True
 
@@ -98,10 +103,13 @@ class DebugToolbarMiddleware(object):
             for panel in self.debug_toolbars[request].panels:
                 panel.process_response(request, response)
             if response['Content-Type'].split(';')[0] in _HTML_TYPES:
-                response.content = replace_insensitive(
+                if self.tag in smart_unicode(response.content):
+                    response.content = replace_insensitive(
                     smart_unicode(response.content), 
                     self.tag,
                     smart_unicode(self.debug_toolbars[request].render_toolbar() + self.tag))
+                else:
+                    response.content = "%s%s" % (smart_unicode(response.content), smart_unicode(self.debug_toolbars[request].render_toolbar()))
             if response.get('Content-Length', None):
                 response['Content-Length'] = len(response.content)
         del self.debug_toolbars[request]

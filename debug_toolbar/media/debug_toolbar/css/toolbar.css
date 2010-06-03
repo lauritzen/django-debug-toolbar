@@ -129,6 +129,12 @@
 	opacity:1.0;
 }
 
+#djDebug a#djShowToolBarButton.attention {
+	border-top-color:#ff4f4f;
+	border-left-color:#ff4f4f;
+	border-bottom-color:#ff4f4f;
+}
+
 #djDebug code {
 	display:block;
 	font-family:Consolas, Monaco, "Bitstream Vera Sans Mono", "Lucida Console", monospace;
